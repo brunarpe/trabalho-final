@@ -1,0 +1,18 @@
+# importações
+import plotly # dps colocar só as importações do plotly que vamos usar (ex.: import plotly.express as px)
+import pandas as pd 
+
+# Manuseio de dados
+df = pd.read_csv('gas.csv') # leitura do csv realizada pelo pandas, adicionada a um dataframe 'df'
+df['DATA INICIAL'] = pd.to_datetime(df['DATA INICIAL']) # mudança do tipo: de object para datetime
+
+
+''' Tratamento de dados para gráfico: série temporal - ... ''' 
+
+'''
+1 Arrumar data: separar em mês e ano
+2 Separar o preço médio de revenda de cada ano por região
+3 Separar o preço médio de revenda de cada ano e de cada região por cada combustível
+4 Plotly: preço médio de revenda/Data/Região/Combustível
+'''
+
