@@ -1,18 +1,84 @@
 # importações
-import plotly # dps colocar só as importações do plotly que vamos usar (ex.: import plotly.express as px)
-import pandas as pd 
+import plotly.graph_objects as go
+import pandas as pd
 
 # Manuseio de dados
-df = pd.read_csv('gas.csv') # leitura do csv realizada pelo pandas, adicionada a um dataframe 'df'
-df['DATA INICIAL'] = pd.to_datetime(df['DATA INICIAL']) # mudança do tipo: de object para datetime
+df = pd.read_csv('gas csv.csv')         # leitura do csv realizada pelo pandas, adicionada a um dataframe 'df'
+matriz = df.values.tolist()             # transformando cada linha da base em listas -> matriz
+                                        ## posso substituir matriz por 'linha', acho que fica mais compreensível
 
 
-''' Tratamento de dados para gráfico: série temporal - ... ''' 
 
-'''
-1 Arrumar data: separar em mês e ano
-2 Separar o preço médio de revenda de cada ano por região
-3 Separar o preço médio de revenda de cada ano e de cada região por cada combustível
-4 Plotly: preço médio de revenda/Data/Região/Combustível
-'''
+''' Tratamento de dados para gráfico: série temporal - Acre: Preço médio dos combustíveis ''' 
 
+data = 0 # declarando variáveis 
+estados = 3 # transformei cada linha da base em listas e essas são as posições dos dados que quero em cada lista
+gas = 4
+preço = 7
+
+# Listas para as datas
+data_etanol_hidratado = []
+data_gasolina_comum = []
+data_gasolina_aditivada = []
+data_gas_GLP = []
+data_gas_GNV = []
+data_oleo_diesel = []
+data_oleo_diesel_S10 = []
+
+#Listas para os preços
+preço_etanol_hidratado = []
+preço_gasolina_comum = []
+preço_gasolina_aditivada = []
+preço_gas_GLP = []
+preço_gas_GNV = []
+preço_oleo_diesel = []
+preço_oleo_diesel_S10 = []
+
+for i in range(len(matriz)):                                # O laço percorrerá toda a matriz, se [i] na posição 3 (estados) for igual a Acre
+    if matriz[i][estados] == 'ACRE':                        # se [i] na posição 4 (gas) for igual a '...'
+        if matriz[i][gas] == 'ETANOL HIDRATADO':            # adiciona [i] na posição 7 (preço) na lista de preço_
+            preço_etanol_hidratado.append(matriz[i][preço]) # adiciona [i] na posição 0 (data) na lista de data_
+            data_etanol_hidratado.append(matriz[i][data])  
+        if matriz[i][gas] == 'GASOLINA COMUM':
+            preço_gasolina_comum.append(matriz[i][preço])
+            data_gasolina_comum.append(matriz[i][data])
+        if matriz[i][gas] == 'GASOLINA ADITIVADA':
+            preço_gasolina_aditivada.append(matriz[i][preço])
+            data_gasolina_aditivada.append(matriz[i][data])
+       # if matriz[i][gas] == 'GLP':                        #recomendo tirar GLP da análise pq ele é muito mais caro, o gráfico fica feio
+       #     preço_gas_GLP.append(matriz[i][preço])
+       #     data_gas_GLP.append(matriz[i][data])
+        if matriz[i][gas] == 'GNV':
+            preço_gas_GNV.append(matriz[i][preço])
+            data_gas_GNV.append(matriz[i][data])
+        if matriz[i][gas] == 'OLEO DIESEL':
+            preço_oleo_diesel.append(matriz[i][preço])
+            data_oleo_diesel.append(matriz[i][data])
+        if matriz[i][gas] == 'OLEO DIESEL S10':
+            preço_oleo_diesel_S10.append(matriz[i][preço])
+            data_oleo_diesel_S10.append(matriz[i][data])
+           
+## na apresentação podemos dizer que é possível colocar um input() pra colocar o Estado
+## e que é nosso plano para deixar o Dash mais interativo
+
+# Gráfico de série temporal
+
+fig = go.Figure()
+
+fig.add_trace(go.Scatter(x = data_oleo_diesel_S10, y = preço_oleo_diesel_S10, name = 'Óleo diesel S10')) ## vou entender o que fiz e depois adiciono a explicação
+fig.add_trace(go.Scatter(x = data_oleo_diesel, y = preço_oleo_diesel, name = 'Óleo diesel'))
+fig.add_trace(go.Scatter(x = data_etanol_hidratado, y = preço_etanol_hidratado, name = 'Etanol hidratado'))
+fig.add_trace(go.Scatter(x = data_gasolina_comum, y = preço_gasolina_comum, name = 'Gasolina comum'))
+fig.add_trace(go.Scatter(x = data_gasolina_aditivada, y = preço_gasolina_aditivada, name = 'Gasolina aditivada'))
+#fig.add_trace(go.Scatter(x = data_gas_GLP, y = preço_gas_GLP, name = 'GLP'))
+fig.add_trace(go.Scatter(x = data_gas_GNV, y = preço_gas_GNV, name = 'GNV'))
+
+fig.update_layout(title='Acre: Preço Médio dos Combustíveis',
+xaxis_title='Ano',
+yaxis_title='Preço médio R$',
+plot_bgcolor = 'white',
+font = {'family': 'Arial','size': 16,'color': 'black'})
+fig.update_xaxes( showgrid=True, gridwidth=1, gridcolor='lightgray',
+showline=True, linewidth=1, linecolor='black')
+fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgray',
+showline=True, linewidth=1, linecolor='black')
